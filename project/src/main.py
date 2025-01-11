@@ -1,0 +1,46 @@
+from controller import weather, model, gymcapacity
+from database import table
+
+if __name__ == "__main__":
+    a = weather.Weather()
+    weatherData = a.getData()
+    b = gymcapacity.gymCapacity()
+    gymData = b.getData()
+    address = b.getAddress()
+
+    weatherIndex = {}
+    for wData in weatherData:
+        print(wData['area'])
+        weatherIndex[wData['area']] = model.model.insert(table.weather, wData)
+
+    for key in gymData['data']:
+        GYMdata = {}
+        GYMarea = key
+        replace= ['ActiveSG','@','Gym','CC','East','West']
+        for r in replace:
+            GYMarea = GYMarea.replace(r, '')
+        GYMarea = GYMarea.strip()
+        if gymData['data'][key].lower() == 'closed':
+            GYMdata['capacity'] = 0
+        else:
+            GYMdata['capacity'] = int(gymData['data'][key].replace('%', '').replace('full', '').strip())
+        GYMdata['created_at'] = gymData['timestamp']
+        GYMdata['location'] = key
+        for wData in weatherData:
+            if GYMarea in wData['area']:
+                GYMdata['weather_id'] = weatherIndex[wData['area']]
+                break
+            else:
+                found = False
+                for addr in address:
+                    if GYMarea in addr:
+                        if wData['area'] in addr:
+                            GYMdata['weather_id'] = weatherIndex[wData['area']]
+                            print(wData['area'], GYMarea)
+                            found = True
+                            break
+                if found : break
+        model.model.insert(table.gym_capacity, GYMdata)
+
+    #     # print(model.model.insert(table.weather, data))
+    model.model.queryAll(table.gym_capacity)

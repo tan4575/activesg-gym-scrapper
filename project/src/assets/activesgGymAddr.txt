@@ -1,0 +1,17 @@
+426, Clementi Avenue 3, Pasir Panjang Gardens, Clementi, Southwest, Singapore, 120426, Singapore,clementi sports centre,clementi avenue 3
+Jurong West Sports Complex, 20, Jurong West Street 93, Yunnan, Jurong West, Southwest, Singapore, 648965, Singapore,jurong west sports centre,jurong west street 93
+Kallang Park Connector, Marymount, Bishan, Central, Singapore, 579782, Singapore,bishan sports centre,bishan street 14
+Jurong Park Connector, Jurong West, Southwest, Singapore, 640485, Singapore,jurong east sports centre,jurong east street 31
+Bedok Town Centre, Bedok, Southeast, Singapore, 460205, Singapore,heartbeat@bedok,bedok north street 1
+Hougang Sports Complex, Hougang Avenue 10, Hougang, Northeast, Singapore, 538829, Singapore,hougang sports centre,hougang avenue 4
+Choa Chu Kang Park Connector, Sunshine Place, Bukit Batok, Southwest, Singapore, 680475, Singapore,bukit gombak sports centre,bukit batok west avenue 5
+Choa Chu Kang Stadium, Choa Chu Kang Street 53, Choa Chu Kang, Southwest, Singapore, 689964, Singapore,choa chu kang sports centre,choa chu kang street 53
+858E, Tampines Walk, Tampines West, Tampines, Northeast, Singapore, 525858, Singapore,our tampines hub - community auditorium,tampines avenue 4
+Pasir Ris Sports Centre, 120, Pasir Ris Central, Pasir Ris, Northeast, Singapore, 519640, Singapore,pasir ris sports centre,pasir ris central
+Sengkang Sports Complex, 59, Anchorvale Road, Anchorvale, Seng Kang, Northeast, Singapore, 544965, Singapore,sengkang sports centre,anchorvale road
+Lorong 6 Toa Payoh, Toa Payoh, Central, Singapore, 319521, Singapore,toa payoh sports centre,lorong 6 toa payoh
+Woodlands (St 13) Park Connector, Marsiling, Woodlands, Northwest, Singapore, 730179, Singapore,woodlands sports centre,woodlands street 12
+Yio Chu Kang Sport Centre, 214, Ang Mo Kio Avenue 9, Ang Mo Kio, Central, Singapore, 569780, Singapore,yio chu kang sports centre,ang mo kio avenue 9
+Yishun Avenue 2, Khatib, Yishun, Northwest, Singapore, 767944, Singapore,yishun sports centre,yishun avenue 1
+Delta Sports Complex, 900, Tiong Bahru Road, Bukit Merah, Central, Singapore, 158790, Singapore,delta sports centre,tiong bahru road
+Enabling Village, 20, Lengkok Bahru, Bukit Merah, Central, Singapore, 159053, Singapore,enabling village gym,lengkok bahru
