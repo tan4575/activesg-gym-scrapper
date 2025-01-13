@@ -16,7 +16,7 @@ class weather(Base):
     # relationships
     children      = relationship("gym_capacity", back_populates="parent")
     def as_dict(self):
-            return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 class gym_capacity(Base):
     __tablename__   = 'gym_capacity'
@@ -31,13 +31,13 @@ class gym_capacity(Base):
     # # relationships
     parent       = relationship("weather", back_populates="children")
     def as_dict(self):
-            return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 class datacamp_courses(Base):
     __tablename__       = 'datacamp_courses'
-    course_id           = db.Column(db.Integer, primary_key=True)
+    id           = db.Column(db.Integer, primary_key=True)
     course_name         = db.Column(db.String(50),nullable=False, unique=True)
     course_instructor   = db.Column(db.String(100),nullable=False)
     topic               = db.Column(db.String(20),nullable=False)
     def as_dict(self):
-            return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

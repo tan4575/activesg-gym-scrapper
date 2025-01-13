@@ -6,12 +6,12 @@ import time
 class service(Thread):
     def __init__(self, group = None, target = None, name = None, args = ..., kwargs = None, *, daemon = None):
         super().__init__(group, target, name, args, kwargs, daemon=daemon)
-        self._ev_wait_running    : Event     = Event()
-        self._condition     : Condition = Condition()
-        self._name          : str       = name
-        self._running        : bool      = False
-        self._mutex         : Lock      = Lock()
-        self._in_queue      : Queue     = Queue(maxsize=1)
+        self._ev_wait_running   : Event     = Event()
+        self._condition         : Condition = Condition()
+        self._name              : str       = name
+        self._running           : bool      = False
+        self._mutex             : Lock      = Lock()
+        self._in_queue          : Queue     = Queue(maxsize=1)
 
     def start(self):
         if not self._running:

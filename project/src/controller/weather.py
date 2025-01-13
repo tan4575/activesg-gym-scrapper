@@ -1,6 +1,9 @@
 import os, sys
 
-sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
+if __name__ == "__main__":
+    import os, sys
+    PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
+    sys.path.insert(1,PATH)
 
 from database import table
 from httprequests import sendRequest

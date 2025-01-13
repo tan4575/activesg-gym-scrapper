@@ -5,6 +5,12 @@ from sqlalchemy.exc import DontWrapMixin
 from sqlalchemy import inspect
 import sqlalchemy as db
 
+if __name__ == "__main__":
+    import os, sys
+    PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
+    sys.path.insert(1,PATH)
+from logger import logger
+
 class DbException(Exception, DontWrapMixin):
     pass
 
@@ -26,7 +32,7 @@ class database():
     def queryAll(self, table):
         data    = self.session.query(table).all()
         for s in data:
-            print(s.as_dict())
+            logger.logger.info(s.as_dict())
 
     def queryOne(self, table,*args, **kwargs):
         for k, v in kwargs.items():
@@ -38,7 +44,7 @@ class database():
                 t = getattr(table,k) == v
         data = self.session.query(table).where((t))
         for s in data:
-            print(s.as_dict())
+            logger.logger.info(s.as_dict())
 
     def delete(self , table ,*args, **kwargs):
         for k, v in kwargs.items():
@@ -53,7 +59,7 @@ class database():
         self.conn.commit()
         return list(ret)[0][0]
 
-    def insert(self, table,*args, **kwargs):
+    def insert(self, table, *args, **kwargs):
         if len(kwargs):
             stmt = db.insert(table).values(**kwargs).returning(table.__table__.columns.id)
         elif len(args):
@@ -76,7 +82,7 @@ if __name__ == "__main__":
         )
     
     # mydb.delete(datacamp_courses, course_name= "spongebob Patrix1")
-    # for i in range(1,10):
-    #     mydb.insert(datacamp_courses, course_name=f"spongebob Patrix{i}", course_instructor=f"Spongebob Squarepants LalaSoup{i}",topic="Sohai 123")
+    for i in range(1,10):
+        mydb.insert(datacamp_courses, course_name=f"spongebob Patrix{i}", course_instructor=f"Spongebob Squarepants LalaSoup{i}",topic="Sohai 123")
     mydb.queryAll(datacamp_courses)
     mydb.queryOne(datacamp_courses, course_name= "spongebob Patrix2")

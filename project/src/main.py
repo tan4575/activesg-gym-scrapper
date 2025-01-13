@@ -1,7 +1,9 @@
 from controller import weather, model, gymcapacity
 from database import table
+from logger import logger
 
 if __name__ == "__main__":
+    logger.logger.info('Started')
     a = weather.Weather()
     weatherData = a.getData()
     b = gymcapacity.gymCapacity()
@@ -10,7 +12,7 @@ if __name__ == "__main__":
 
     weatherIndex = {}
     for wData in weatherData:
-        print(wData['area'])
+        logger.logger.info(wData['area'])
         weatherIndex[wData['area']] = model.model.insert(table.weather, wData)
 
     for key in gymData['data']:
@@ -36,7 +38,7 @@ if __name__ == "__main__":
                     if GYMarea in addr:
                         if wData['area'] in addr:
                             GYMdata['weather_id'] = weatherIndex[wData['area']]
-                            print(wData['area'], GYMarea)
+                            logger.logger.info("%s, %s", wData['area'], GYMarea)
                             found = True
                             break
                 if found : break

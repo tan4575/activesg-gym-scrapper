@@ -1,7 +1,8 @@
 import os, sys
-
 PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
-sys.path.insert(1,PATH)
+
+if __name__ == "__main__":
+    sys.path.insert(1,PATH)
 
 from web import scrapping
 from model import model
