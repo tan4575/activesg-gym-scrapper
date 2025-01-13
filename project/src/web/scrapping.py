@@ -2,11 +2,15 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from pyvirtualdisplay import Display
 from selenium.webdriver.common.by import By
-import os,platform
+import os,platform,sys
 import datetime
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+if __name__ == "__main__":
+    PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
+    sys.path.insert(1,PATH)
+from logger import logger
 
 if platform.machine().strip() == 'x86_64':
     file_path = os.path.abspath('../tools/chromedriver-linux64/chromedriver')
@@ -40,27 +44,31 @@ class Scrapping():
         self.driver.close()
     
     def getData( self ):
-        if self.url is not None:
-            self.driver.get(self.url)
-            elements = self.driver.find_elements(By.XPATH, '//div')
-            d = {}
-            datetime_obj = ''
-            for e in elements:
-                if 'Last updated' in e.text:
-                    date = e.text.strip()[e.text.strip().index('Last updated'):].split('\n')[0].replace(',', '').split(' ')
-                    date_string = f"{date[4]} {date[3]} {date[5]} {date[6]}:00 {date[7]}"
-                    datetime_obj = datetime.datetime.strptime(date_string, '%B %d %Y %I:%M:%S %p')
-                if "Gym Capacity" in e.text:
-                    if datetime_obj:
-                        d['timestamp'] = str(datetime_obj)
-                    else:
-                        d['timestamp'] =  str(datetime.datetime.now())
-                    d['data'] = {}
-                    temp = e.text.split('\n')
-                    index = temp.index("Gym Capacity")
-                    for i in range(index+2,len(temp),2):
-                        d['data'][temp[i]] = temp[i+1]
-                    break
+        d = {}
+        try:
+            if self.url is not None:
+                self.driver.get(self.url)
+                elements = self.driver.find_elements(By.XPATH, '//div')
+                datetime_obj = ''
+                for e in elements:
+                    if 'Last updated' in e.text:
+                        date = e.text.strip()[e.text.strip().index('Last updated'):].split('\n')[0].replace(',', '').split(' ')
+                        date_string = f"{date[4]} {date[3]} {date[5]} {date[6]}:00 {date[7]}"
+                        datetime_obj = datetime.datetime.strptime(date_string, '%B %d %Y %I:%M:%S %p')
+                    if "Gym Capacity" in e.text:
+                        if datetime_obj:
+                            d['timestamp'] = str(datetime_obj)
+                        else:
+                            d['timestamp'] =  str(datetime.datetime.now())
+                        d['data'] = {}
+                        temp = e.text.split('\n')
+                        index = temp.index("Gym Capacity")
+                        for i in range(index+2,len(temp),2):
+                            d['data'][temp[i]] = temp[i+1]
+                        break
+        except Exception as e:
+            logger.logger.error(e)
+        finally:
             return d
 
 

@@ -47,26 +47,36 @@ class database():
             logger.logger.info(s.as_dict())
 
     def delete(self , table ,*args, **kwargs):
-        for k, v in kwargs.items():
-            statement = db.select(table).where((getattr(table,k) == v))
-            results = self.conn.execute(statement).fetchall()
-            if len(results)==0:
-                raise DbException("Not Found!")
-            else:
-                t = getattr(table,k) == v
-            stmt = db.delete(table).where((t)).returning(table.__table__.columns.id)
-        ret = self.conn.execute(stmt)
-        self.conn.commit()
-        return list(ret)[0][0]
+        ret = None
+        try :
+            for k, v in kwargs.items():
+                statement = db.select(table).where((getattr(table,k) == v))
+                results = self.conn.execute(statement).fetchall()
+                if len(results)==0:
+                    raise DbException("Not Found!")
+                else:
+                    t = getattr(table,k) == v
+                stmt = db.delete(table).where((t)).returning(table.__table__.columns.id)
+            ret = list(self.conn.execute(stmt))[0][0]
+            self.conn.commit()
+        except Exception as e:
+            logger.logger.error(e)
+        finally:
+            return ret
 
     def insert(self, table, *args, **kwargs):
-        if len(kwargs):
-            stmt = db.insert(table).values(**kwargs).returning(table.__table__.columns.id)
-        elif len(args):
-            stmt = db.insert(table).values(*args).returning(table.__table__.columns.id)
-        ret = self.conn.execute(stmt)
-        self.conn.commit()
-        return list(ret)[0][0]
+        ret = None
+        try :
+            if len(kwargs):
+                stmt = db.insert(table).values(**kwargs).returning(table.__table__.columns.id)
+            elif len(args):
+                stmt = db.insert(table).values(*args).returning(table.__table__.columns.id)
+            ret = list(self.conn.execute(stmt))[0][0]
+            self.conn.commit()
+        except Exception as e:
+            logger.logger.error(e)
+        finally:
+            return ret
 
 
 if __name__ == "__main__":
