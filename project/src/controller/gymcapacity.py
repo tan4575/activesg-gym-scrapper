@@ -49,9 +49,9 @@ class gymCapacity():
                         locname = geoLoc.reverse(f"{activeSG[k]['geometry'][1]}, {activeSG[k]['geometry'][0]}")
                         if writeToFile:
                             f.write(locname.address)
-                            f.write(',')
+                            f.write(', ')
                             f.write(activeSG[k]['sports_cen'])
-                            f.write(',')
+                            f.write(', ')
                             f.write(activeSG[k]['road_name'])
                             f.write('\n')
                         address.append(locname.address)

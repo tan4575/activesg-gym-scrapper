@@ -32,7 +32,7 @@ class database():
     def queryAll(self, table):
         data    = self.session.query(table).all()
         for s in data:
-            logger.logger.info(s.as_dict())
+            logger.logger.info("%s - %s", __name__ ,s.as_dict())
 
     def queryOne(self, table,*args, **kwargs):
         for k, v in kwargs.items():
@@ -44,7 +44,7 @@ class database():
                 t = getattr(table,k) == v
         data = self.session.query(table).where((t))
         for s in data:
-            logger.logger.info(s.as_dict())
+            logger.logger.info("%s - %s", __name__ ,s.as_dict())
 
     def delete(self , table ,*args, **kwargs):
         ret = None
@@ -60,7 +60,7 @@ class database():
             ret = list(self.conn.execute(stmt))[0][0]
             self.conn.commit()
         except Exception as e:
-            logger.logger.error(e)
+            logger.logger.error("%s - %s", __name__ ,e)
         finally:
             return ret
 
@@ -74,7 +74,7 @@ class database():
             ret = list(self.conn.execute(stmt))[0][0]
             self.conn.commit()
         except Exception as e:
-            logger.logger.error(e)
+            logger.logger.error("%s - %s", __name__ ,e)
         finally:
             return ret
 

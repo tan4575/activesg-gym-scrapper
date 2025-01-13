@@ -17,15 +17,32 @@ class Weather():
         r1 = self.request.getRainFallData()
         r2 = self.request.getTwoHourForecast()
         retData = []
+        location = []
         for k in r1.keys():
+            r1[k]['area'] = None
+
             for k1 in r2.keys():
                 if k1 in r1[k]['location']:
                     r1[k]['forecast'] = r2[k1]['forecast']
+                    r1[k]['area'] = k1
                     break
+            location.append(r1[k]['area'])
+
+        for k1 in r2.keys():
+            data = {}
+            if k1 not in location:
+                data['deviceId'] = None
+                data['area']     = k1
+                data['rainfall'] = 0
+                data['forecast'] = r2[k1]['forecast']
+                data['time'] = r2[k1]['timestamp']
+                retData.append(data)
         for k in r1:
             data = {}
             data['deviceId'] = k
-            if r1[k].get('location') is not None:
+            if r1[k].get('area') is not None:
+                data['area'] = r1[k]['area']
+            elif r1[k].get('location') is not None:
                 data['area'] = r1[k]['location']
             if r1[k].get('value') is not None:
                 data['rainfall'] = r1[k]['value']
