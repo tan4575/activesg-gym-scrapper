@@ -64,7 +64,15 @@ class Scrapping():
                         temp = e.text.split('\n')
                         index = temp.index("Gym Capacity")
                         for i in range(index+2,len(temp),2):
-                            d['data'][temp[i]] = temp[i+1]
+                            d['data'][i] = {}
+                            d['data'][i]['name'] = temp[i]
+                            replace = ['ActiveSG','@','Gym','CC', 'Square']
+                            GYMarea = temp[i]
+                            for r in replace:
+                                GYMarea = GYMarea.replace(r, '')
+                            GYMarea = GYMarea.strip()
+                            d['data'][i]['area'] = GYMarea
+                            d['data'][i]['capacity'] = temp[i+1]
                         break
         except Exception as e:
             logger.logger.error(e)

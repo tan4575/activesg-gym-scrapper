@@ -36,19 +36,23 @@ class Weather():
                 data['rainfall'] = 0
                 data['forecast'] = r2[k1]['forecast']
                 data['time'] = r2[k1]['timestamp']
+                data['longitude'] = r2[k1]['location']['longitude']
+                data['latitude'] = r2[k1]['location']['latitude']
                 retData.append(data)
         for k in r1:
             data = {}
             data['deviceId'] = k
             if r1[k].get('area') is not None:
                 data['area'] = r1[k]['area']
-            elif r1[k].get('location') is not None:
-                data['area'] = r1[k]['location']
+            elif r1[k].get('name') is not None:
+                data['area'] = r1[k]['name']
             if r1[k].get('value') is not None:
                 data['rainfall'] = r1[k]['value']
             if r1[k].get('forecast') is not None:
                 data['forecast'] = r1[k]['forecast']
             data['time'] = r1[k]['timestamp']
+            data['longitude'] = r1[k]['location']['longitude']
+            data['latitude'] = r1[k]['location']['latitude']
             retData.append(data)
         return retData
 

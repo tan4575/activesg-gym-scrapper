@@ -21,7 +21,8 @@ class sendRequest():
         ret = self.getRequest("https://api-open.data.gov.sg/v2/real-time/api/rainfall")
         for i in ret['data']['stations']:
             data[i['deviceId']] = {}
-            data[i['deviceId']]['location'] = i['name']
+            data[i['deviceId']]['name'] = i['name']
+            data[i['deviceId']]['location'] = i['location']
         for i in ret['data']['readings'][0]['data']:
             data[i['stationId']]['timestamp'] =  ret['data']['readings'][0]["timestamp"]
             data[i['stationId']]['value'] = i['value']
@@ -36,6 +37,7 @@ class sendRequest():
         ret = self.getRequest("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast")
         for i in ret['data']['area_metadata']:
             data[i['name']] = {}
+            data[i['name']]['location'] = i['label_location']
 
         for i in ret['data']['items'][0]["forecasts"]:
             data[i['area']]['timestamp']  = ret['data']['items'][0]["timestamp"]

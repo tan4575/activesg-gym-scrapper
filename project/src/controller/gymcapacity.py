@@ -6,16 +6,36 @@ if __name__ == "__main__":
 
 from web import scrapping
 from model import model
+from database import table
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
-import json
+from logger import logger
+import json, datetime
 
 class gymCapacity():
     def __init__(self):
         self.scrapper = scrapping.Scrapping('https://activesg.gov.sg/gym-capacity')
-
+        self.geoLoc = Nominatim(user_agent="GetLoc")
+        
     def getData(self):
-        return self.scrapper.getData()
+        data = self.scrapper.getData()
+        for k in data['data']:
+            try:
+                data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
+            except Exception as e:
+                if str(e) == "Not Found!":
+                    location = self.geoLoc.geocode(data['data'][k]['area'] + " Singapore")
+                    if location is not None:
+                         model.model.insert(table.coordinate,{
+                             'area'     : data['data'][k]['area'],
+                             'longitude': location.longitude,
+                             'latitude' : location.latitude,
+                             'time'     : str(datetime.datetime.now())
+                         })
+                    else:
+                        data['data'][k]['coordinate'] = None
+                        logger.logger.info("%s - %s", __name__ , data['data'][k]['area'])
+        return data
     
     def getInfo(self):
         info = {}
@@ -35,7 +55,6 @@ class gymCapacity():
         return info
     
     def getAddress(self, writeToFile=True, filePath= PATH + '/assets', fileName='activesgGymAddr', replace=False):
-        geoLoc = Nominatim(user_agent="GetLoc")
         activeSG = self.getInfo()
         address = []
         if os.path.isfile((filePath + '/' + fileName + '.txt')) and not replace:
@@ -46,7 +65,7 @@ class gymCapacity():
             with open( (filePath + '/' +fileName + '.txt'), 'w' ) as f:
                 for k in activeSG:
                     if activeSG[k]['gym']:
-                        locname = geoLoc.reverse(f"{activeSG[k]['geometry'][1]}, {activeSG[k]['geometry'][0]}")
+                        locname = self.geoLoc.reverse(f"{activeSG[k]['geometry'][1]}, {activeSG[k]['geometry'][0]}")
                         if writeToFile:
                             f.write(locname.address)
                             f.write(', ')

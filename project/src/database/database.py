@@ -42,9 +42,12 @@ class database():
                 raise DbException("Not Found!")
             else:
                 t = getattr(table,k) == v
-        data = self.session.query(table).where((t))
-        for s in data:
-            logger.logger.info("%s - %s", __name__ ,s.as_dict())
+                data = self.session.query(table).where((t))
+                retData = []
+                for s in data:
+                    logger.logger.info("%s - %s", __name__ ,s.as_dict())
+                    retData.append(s.as_dict())
+                return retData
 
     def delete(self , table ,*args, **kwargs):
         ret = None
@@ -57,8 +60,8 @@ class database():
                 else:
                     t = getattr(table,k) == v
                 stmt = db.delete(table).where((t)).returning(table.__table__.columns.id)
-            ret = list(self.conn.execute(stmt))[0][0]
-            self.conn.commit()
+                ret = list(self.conn.execute(stmt))[0][0]
+                self.conn.commit()
         except Exception as e:
             logger.logger.error("%s - %s", __name__ ,e)
         finally:
