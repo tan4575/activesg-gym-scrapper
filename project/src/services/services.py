@@ -28,7 +28,6 @@ class service(Thread):
 
     def stop(self):
         self._running = False
-        super().join()
 
     def run(self):
         self.work_thread()
