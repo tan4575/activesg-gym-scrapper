@@ -10,6 +10,7 @@ from database import table
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
 from logger import logger
+from error import error
 import json, datetime
 
 class gymCapacity():
@@ -23,7 +24,8 @@ class gymCapacity():
             try:
                 data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
             except Exception as e:
-                if str(e) == "Not Found!":
+                err = str(e).split('Error Code:')
+                if err[-1].strip() == str(error.ERROR_CODE.NOT_FOUND.value):
                     location = self.geoLoc.geocode(data['data'][k]['area'] + " Singapore")
                     if location is not None:
                          model.model.insert(table.coordinate,{
@@ -35,6 +37,8 @@ class gymCapacity():
                     else:
                         data['data'][k]['coordinate'] = None
                         logger.logger.info("%s - %s", __name__ , data['data'][k]['area'])
+                else:
+                    data['data'][k]['coordinate'] = None
         return data
     
     def getInfo(self):

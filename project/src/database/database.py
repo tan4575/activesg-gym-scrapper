@@ -1,8 +1,5 @@
-from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import DontWrapMixin
-from sqlalchemy import inspect
 import sqlalchemy as db
 
 if __name__ == "__main__":
@@ -10,9 +7,7 @@ if __name__ == "__main__":
     PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
     sys.path.insert(1,PATH)
 from logger import logger
-
-class DbException(Exception, DontWrapMixin):
-    pass
+from error import error
 
 class database():
     def __init__(self, drivername, username,host, database,password, port):
@@ -39,7 +34,7 @@ class database():
             statement = db.select(table).where((getattr(table,k) == v))
             results = self.conn.execute(statement).fetchall()
             if len(results)==0:
-                raise DbException("Not Found!")
+                raise error.DbException("Not Found!", error.ERROR_CODE.NOT_FOUND.value)
             else:
                 t = getattr(table,k) == v
                 data = self.session.query(table).where((t))
@@ -56,7 +51,7 @@ class database():
                 statement = db.select(table).where((getattr(table,k) == v))
                 results = self.conn.execute(statement).fetchall()
                 if len(results)==0:
-                    raise DbException("Not Found!")
+                    raise error.DbException("Not Found!", error.ERROR_CODE.NOT_FOUND.value)
                 else:
                     t = getattr(table,k) == v
                 stmt = db.delete(table).where((t)).returning(table.__table__.columns.id)

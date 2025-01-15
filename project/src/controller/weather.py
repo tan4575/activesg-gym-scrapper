@@ -41,6 +41,8 @@ class Weather():
         retData = []
         location = []
         bestmatch = ()
+        if len(r1) == 0 or len(r2) == 0 :
+            return retData
         for k in r1.keys():
             r1[k]['area'] = None
             dist = float("inf")
@@ -49,7 +51,6 @@ class Weather():
                                             r2[k1]['location']["longitude"],
                                             r1[k]['location']["latitude"],
                                             r1[k]['location']["longitude"])
-                
                 if coord_dist < dist:
                     dist = coord_dist
                     r1[k]['forecast'] = r2[k1]['forecast']

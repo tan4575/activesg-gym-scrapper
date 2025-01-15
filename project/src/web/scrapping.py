@@ -11,6 +11,7 @@ if __name__ == "__main__":
     PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
     sys.path.insert(1,PATH)
 from logger import logger
+from error import error
 
 if platform.machine().strip() == 'x86_64':
     file_path = os.path.abspath('../tools/chromedriver-linux64/chromedriver')
@@ -22,23 +23,29 @@ class Scrapping():
 
     def __init__( self, url=None):
         self.url = url
-        if os.path.exists(file_path):
-            if platform.machine().strip() != 'x86_64':
-                display = Display(visible=0, size=(800, 600))
-                display.start()
-            cService = webdriver.ChromeService(executable_path=file_path)
-            op = webdriver.ChromeOptions()
-            if platform.machine().strip() == 'x86_64':
-                op.binary_location = file_path_browser
-            # op.add_argument("--headless")
-            op.add_argument("--no-sandbox")
-            op.add_argument("start-maximized")
-            op.add_argument("disable-infobars")
-            op.add_argument("--disable-extensions")
-            op.add_argument("--disable-popup-blocking")
-            op.add_argument("--disable-notifications")
-            self.driver = webdriver.Chrome(service = cService,options=op)
-            self.driver.implicitly_wait(10)
+        self.driver = None
+        try:
+            if os.path.exists(file_path):
+                if platform.machine().strip() != 'x86_64':
+                    display = Display(visible=0, size=(800, 600))
+                    display.start()
+                cService = webdriver.ChromeService(executable_path=file_path)
+                op = webdriver.ChromeOptions()
+                if platform.machine().strip() == 'x86_64':
+                    op.binary_location = file_path_browser
+                # op.add_argument("--headless")
+                op.add_argument("--no-sandbox")
+                op.add_argument("start-maximized")
+                op.add_argument("disable-infobars")
+                op.add_argument("--disable-extensions")
+                op.add_argument("--disable-popup-blocking")
+                op.add_argument("--disable-notifications")
+                self.driver = webdriver.Chrome(service = cService,options=op)
+                self.driver.implicitly_wait(10)
+        except Exception as e:
+            logger.logger.error(e)
+            raise error.ScrappingException("Driver Error!", error.ERROR_CODE.DRIVER_ERROR.value)
+
 
     def close ( self ):
         self.driver.close()
@@ -46,7 +53,7 @@ class Scrapping():
     def getData( self ):
         d = {}
         try:
-            if self.url is not None:
+            if self.url is not None and self.driver is not None:
                 self.driver.get(self.url)
                 elements = self.driver.find_elements(By.XPATH, '//div')
                 datetime_obj = ''
