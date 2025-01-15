@@ -16,10 +16,11 @@ import json, datetime
 class gymCapacity():
     def __init__(self):
         self.scrapper = scrapping.Scrapping('https://activesg.gov.sg/gym-capacity')
-        self.geoLoc = Nominatim(user_agent="GetLoc")
+        self.geoLoc = Nominatim(user_agent="myencoder")
         
     def getData(self):
         data = self.scrapper.getData()
+        if len(data) == 0 : return data
         for k in data['data']:
             try:
                 data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
@@ -34,6 +35,7 @@ class gymCapacity():
                              'latitude' : location.latitude,
                              'time'     : str(datetime.datetime.now())
                          })
+                         data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
                     else:
                         data['data'][k]['coordinate'] = None
                         logger.logger.info("%s - %s", __name__ , data['data'][k]['area'])
