@@ -9,15 +9,30 @@ from model import model
 from database import table
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
 from logger import logger
 from error import error
-import json, datetime
+import json, datetime, string,random
 
 class gymCapacity():
     def __init__(self):
         self.scrapper = scrapping.Scrapping('https://activesg.gov.sg/gym-capacity')
-        self.geoLoc = Nominatim(user_agent="myencoder")
-        
+        self.name = self.id_generator()
+        self.geoLoc = Nominatim(user_agent=self.name)
+
+    def id_generator(self, size=6):
+        return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(size))
+
+    def geocode(self, address, attempt=1, max_attempts=5):
+        try:
+            return self.geoLoc.geocode(address)
+        except GeocoderTimedOut:
+            if attempt <= max_attempts:
+                self.name = self.id_generator()
+                self.geoLoc = Nominatim(user_agent=self.name)
+                return self.do_geocode(address, attempt=attempt+1)
+            raise
+
     def getData(self):
         data = self.scrapper.getData()
         if len(data) == 0 : return data
@@ -27,15 +42,15 @@ class gymCapacity():
             except Exception as e:
                 err = str(e).split('Error Code:')
                 if err[-1].strip() == str(error.ERROR_CODE.NOT_FOUND.value):
-                    location = self.geoLoc.geocode(data['data'][k]['area'] + " Singapore")
+                    location = self.geocode(data['data'][k]['area'] + " Singapore")
                     if location is not None:
-                         model.model.insert(table.coordinate,{
-                             'area'     : data['data'][k]['area'],
-                             'longitude': location.longitude,
-                             'latitude' : location.latitude,
-                             'time'     : str(datetime.datetime.now())
-                         })
-                         data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
+                        model.model.insert(table.coordinate,{
+                            'area'     : data['data'][k]['area'],
+                            'longitude': location.longitude,
+                            'latitude' : location.latitude,
+                            'time'     : str(datetime.datetime.now())
+                        })
+                        data['data'][k]['coordinate'] = model.model.queryOne(table.coordinate, area=data['data'][k]['area'])[0]
                     else:
                         data['data'][k]['coordinate'] = None
                         logger.logger.info("%s - %s", __name__ , data['data'][k]['area'])
