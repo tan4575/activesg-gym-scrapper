@@ -25,6 +25,11 @@ or
 sudo apt install docker.io
 ```
 
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo usermod -aG docker $USER
+```
+
 ### To create the conda env
 
 ```
