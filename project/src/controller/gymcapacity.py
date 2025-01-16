@@ -9,7 +9,7 @@ from model import model
 from database import table
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
+from geopy.exc import GeocoderTimedOut,GeocoderUnavailable
 from logger import logger
 from error import error
 import json, datetime, string,random
@@ -20,17 +20,18 @@ class gymCapacity():
         self.name = self.id_generator()
         self.geoLoc = Nominatim(user_agent=self.name)
 
-    def id_generator(self, size=6):
+    def id_generator(self, size=10):
         return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(size))
 
     def geocode(self, address, attempt=1, max_attempts=5):
         try:
             return self.geoLoc.geocode(address)
-        except GeocoderTimedOut:
+        except (GeocoderTimedOut, GeocoderUnavailable) as e:
+            logger.logger.info("%s - timeout attempt : %d error : %s", __name__ , attempt, e)
             if attempt <= max_attempts:
                 self.name = self.id_generator()
                 self.geoLoc = Nominatim(user_agent=self.name)
-                return self.do_geocode(address, attempt=attempt+1)
+                return self.geocode(address, attempt=attempt+1)
             raise
 
     def getData(self):
