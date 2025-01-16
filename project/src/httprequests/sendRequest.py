@@ -19,6 +19,7 @@ class sendRequest():
     def getRainFallData(self):
         data = dict()
         ret = self.getRequest("https://api-open.data.gov.sg/v2/real-time/api/rainfall")
+        if len(ret) == 0 : return data
         for i in ret['data']['stations']:
             data[i['deviceId']] = {}
             data[i['deviceId']]['name'] = i['name']
@@ -35,6 +36,7 @@ class sendRequest():
     def getTwoHourForecast(self):
         data = dict()
         ret = self.getRequest("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast")
+        if len(ret) == 0 : return data
         for i in ret['data']['area_metadata']:
             data[i['name']] = {}
             data[i['name']]['location'] = i['label_location']
