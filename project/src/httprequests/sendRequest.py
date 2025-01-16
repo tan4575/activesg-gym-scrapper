@@ -1,5 +1,9 @@
-import requests
+import requests, os, sys
 from requests.exceptions import HTTPError
+if __name__ == "__main__":
+    PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
+    sys.path.insert(1,PATH)
+from logger import logger
 
 class sendRequest():
     
@@ -10,8 +14,10 @@ class sendRequest():
         try:
             response = requests.get(url, params)
         except HTTPError as http_err:
+            logger.logger.error("%s - HTTP error : %s", __name__ , http_err)
             print(f"HTTP error occurred: {http_err}")
         except Exception as err:
+            logger.logger.error("%s - error : %s", __name__ , err)
             print(f"Other error occurred: {err}")
         else:
             return response.json()
