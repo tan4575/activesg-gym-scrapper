@@ -46,8 +46,7 @@ class ScrappingThread(services.service):
             GYMdata['created_at']   = gymData['timestamp']
 
             ## locations
-            GYMdata['location']     = gymData['data'][gData]['area']
-
+            GYMdata['location']     = gymData['data'][gData]['name']
 
             ## Find the closes distance to weather coordinate
             if gymData['data'][gData]['coordinate'] is not None:
