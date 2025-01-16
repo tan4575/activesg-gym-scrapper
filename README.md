@@ -30,6 +30,11 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo usermod -aG docker $USER
 ```
 
+install Xvfb
+```
+sudo apt-get install xvfb
+```
+
 ### To create the conda env
 
 ```
