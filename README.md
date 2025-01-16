@@ -14,3 +14,7 @@ chromium-browser --version
 ```
 
 Download the prebuilt version from https://github.com/electron/electron/tags 
+
+Install conda https://docs.anaconda.com/miniconda/install/#quick-command-line-install
+
+Install docker https://docs.docker.com/engine/install/ubuntu/
