@@ -12,7 +12,7 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut,GeocoderUnavailable
 from logger import logger
 from error import error
-import json, datetime, string,random
+import json, datetime, string,random, time
 
 class gymCapacity():
     def __init__(self):
@@ -31,6 +31,7 @@ class gymCapacity():
             if attempt <= max_attempts:
                 self.name = self.id_generator()
                 self.geoLoc = Nominatim(user_agent=self.name)
+                time.sleep(0.05)
                 return self.geocode(address, attempt=attempt+1)
             raise
 
