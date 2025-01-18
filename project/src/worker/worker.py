@@ -68,13 +68,17 @@ class ScrappingThread(services.service):
         model.model.queryAll(table.gym_capacity)
 
     def work_thread(self):
-        self.processData()
+        currentTime = datetime.datetime.now()
+        if currentTime.hour <= 22 and currentTime.hour >= 7:
+            self.processData()
         self.set_running()
         while self._running:
             self._timeout_event_flag.wait(self._timeout)
             self._timeout_event_flag.clear()
-            print(datetime.datetime.now())
-            self.processData()
+            currentTime = datetime.datetime.now()
+            if currentTime.hour <= 22 and currentTime.hour >= 7:
+                print(currentTime)
+                self.processData()
 
 
 if __name__ == "__main__":

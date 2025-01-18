@@ -29,18 +29,18 @@ class Scrapping():
                 if platform.machine().strip() != 'x86_64':
                     display = Display(visible=0, size=(800, 600))
                     display.start()
-                cService = webdriver.ChromeService(executable_path=file_path)
-                op = webdriver.ChromeOptions()
+                self.cService = webdriver.ChromeService(executable_path=file_path)
+                self.op = webdriver.ChromeOptions()
                 if platform.machine().strip() == 'x86_64':
-                    op.binary_location = file_path_browser
+                    self.op.binary_location = file_path_browser
                 # op.add_argument("--headless")
-                op.add_argument("--no-sandbox")
-                op.add_argument("start-maximized")
-                op.add_argument("disable-infobars")
-                op.add_argument("--disable-extensions")
-                op.add_argument("--disable-popup-blocking")
-                op.add_argument("--disable-notifications")
-                self.driver = webdriver.Chrome(service = cService,options=op)
+                self.op.add_argument("--no-sandbox")
+                self.op.add_argument("start-maximized")
+                self.op.add_argument("disable-infobars")
+                self.op.add_argument("--disable-extensions")
+                self.op.add_argument("--disable-popup-blocking")
+                self.op.add_argument("--disable-notifications")
+                self.driver = webdriver.Chrome(service = self.cService,options=self.op)
                 self.driver.implicitly_wait(10)
         except Exception as e:
             logger.logger.error(e)
@@ -82,6 +82,9 @@ class Scrapping():
                             d['data'][i]['capacity'] = temp[i+1]
                         break
         except Exception as e:
+            self.driver.close()
+            self.driver = webdriver.Chrome(service = self.cService,options=self.op)
+            self.driver.implicitly_wait(10)
             logger.logger.error(e)
         finally:
             return d
