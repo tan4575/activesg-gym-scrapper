@@ -65,7 +65,7 @@ class ScrappingThread(services.service):
                         bestMatch = gymData['data'][gData]['area'] , wData['area']
                 logger.logger.info("best match : %s, %s", bestMatch[0], bestMatch[1])
             model.model.insert(table.gym_capacity, GYMdata)
-        model.model.queryAll(table.gym_capacity)
+        ## model.model.queryAll(table.gym_capacity)
 
     def work_thread(self):
         currentTime = datetime.datetime.now()

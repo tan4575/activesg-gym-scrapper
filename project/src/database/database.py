@@ -24,10 +24,11 @@ class database():
         self.session        = self.Session()
         self.conn           = self.engine.connect()
 
-    def queryAll(self, table):
+    def queryAll(self, table, log=False):
         data    = self.session.query(table).all()
         for s in data:
-            logger.logger.info("%s - %s", __name__ ,s.as_dict())
+            if log:
+                logger.logger.info("%s - %s", __name__ ,s.as_dict())
 
     def queryOne(self, table,*args, **kwargs):
         for k, v in kwargs.items():
