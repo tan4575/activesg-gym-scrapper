@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/usr/bin/python3
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from pyvirtualdisplay import Display

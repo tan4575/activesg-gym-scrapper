@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/usr/bin/python3
 from sqlalchemy.orm import declarative_base, relationship
 import sqlalchemy as db
 

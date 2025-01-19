@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/usr/bin/python3
 import os,sys,datetime
 from threading import Event,Timer
 if __name__ == "__main__":
@@ -11,7 +11,7 @@ from controller import weather, model, gymcapacity
 from database import table
 
 class ScrappingThread(services.service):
-    def __init__(self, group=None, target=None, name="ScrappingThread", timeout=60.0, args=..., kwargs=None, *, daemon=None):
+    def __init__(self, group=None, target=None, name="ScrappingThread", timeout=10.0, args=..., kwargs=None, *, daemon=None):
         super().__init__(group, target, name, args, kwargs, daemon=daemon)
         self._timeout_event_flag    : Event     = Event()
         self._timeout                           = timeout
@@ -66,7 +66,7 @@ class ScrappingThread(services.service):
                         bestMatch = gymData['data'][gData]['area'] , wData['area']
                 logger.logger.info("best match : %s, %s", bestMatch[0], bestMatch[1])
             model.model.insert(table.gym_capacity, GYMdata)
-        ## model.model.queryAll(table.gym_capacity)
+        model.model.queryAll(table.gym_capacity, log=True)
 
     def work_thread(self):
         currentTime = datetime.datetime.now()

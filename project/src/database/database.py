@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/usr/bin/python3
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy as db
