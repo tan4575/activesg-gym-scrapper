@@ -21,7 +21,10 @@ class sendRequest():
             logger.logger.error("%s - error : %s", __name__ , err)
             print(f"Other error occurred: {err}")
         else:
-            return response.json()
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return 0
 
     def getRainFallData(self):
         data = dict()

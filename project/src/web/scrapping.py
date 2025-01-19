@@ -22,18 +22,25 @@ else:
 
 class Scrapping():
 
-    def __init__( self, url=None):
-        self.url = url
-        self.driver = None
+    def __init__( self, url=None, file_path=file_path, file_path_browser=file_path_browser):
+        self.url                = url
+        self.driver             = None
+        self.op                 = None
+        self.cService           = None
+        self.display            = None
+        self.file_path          = file_path
+        self.file_path_browser  = file_path_browser
+        if platform.machine().strip() != 'x86_64':
+            self.display = Display(visible=0, size=(800, 600))
+            self.display.start()
+
+    def startChromeDriver(self, filePath, filePathBrowser):
         try:
-            if os.path.exists(file_path):
-                if platform.machine().strip() != 'x86_64':
-                    display = Display(visible=0, size=(800, 600))
-                    display.start()
-                self.cService = webdriver.ChromeService(executable_path=file_path)
+            if os.path.exists(filePath):
+                self.cService = webdriver.ChromeService(executable_path=filePath)
                 self.op = webdriver.ChromeOptions()
                 if platform.machine().strip() == 'x86_64':
-                    self.op.binary_location = file_path_browser
+                    self.op.binary_location = filePathBrowser
                 # op.add_argument("--headless")
                 self.op.add_argument("--no-sandbox")
                 self.op.add_argument("start-maximized")
@@ -54,6 +61,7 @@ class Scrapping():
     def getData( self ):
         d = {}
         try:
+            self.startChromeDriver(self.file_path,self.file_path_browser)
             if self.url is not None and self.driver is not None:
                 self.driver.get(self.url)
                 elements = self.driver.find_elements(By.XPATH, '//div')
@@ -82,10 +90,11 @@ class Scrapping():
                             d['data'][i]['area'] = GYMarea
                             d['data'][i]['capacity'] = temp[i+1]
                         break
+                self.driver.quit()
+
         except Exception as e:
             self.driver.close()
-            self.driver = webdriver.Chrome(service = self.cService,options=self.op)
-            self.driver.implicitly_wait(10)
+            self.startChromeDriver(self.file_path,self.file_path_browser)
             logger.logger.error(e)
         finally:
             return d
