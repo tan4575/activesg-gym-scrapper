@@ -39,13 +39,16 @@ class Weather():
     def getData(self):
         r1 = self.request.getRainFallData()
         r2 = self.request.getTwoHourForecast()
+        r3 = self.request.getAirTempData()
         retData = []
         location = []
         bestmatch = ()
-        if len(r1) == 0 or len(r2) == 0 :
+        if len(r1) == 0 or len(r2) == 0 or len(r3) == 0 :
             return retData
         for k in r1.keys():
             r1[k]['area'] = None
+
+            # weather forecast matching
             dist = float("inf")
             for k1 in r2.keys():
                 coord_dist = self.haversine(r2[k1]['location']["latitude"],
@@ -58,6 +61,19 @@ class Weather():
                     r1[k]['area'] = k1
                     bestmatch = r1[k]['location'],  r1[k]['name']  ,r2[k1]['location'], k1
             location.append(r1[k]['area'])
+
+            # temperature
+            dist = float("inf")
+            for k1 in r3.keys():
+                coord_dist = self.haversine(r3[k1]['location']["latitude"],
+                                            r3[k1]['location']["longitude"],
+                                            r1[k]['location']["latitude"],
+                                            r1[k]['location']["longitude"])
+                if coord_dist < dist:
+                    dist = coord_dist
+                    bestmatch = r1[k]['location'],  r1[k]['name']  ,r3[k1]['location'], k1 , r3[k1]
+                    r1[k]['temperature'] = r3[k1]['temperature']
+
         for k in r1:
             data = {}
             data['deviceId'] = k
@@ -68,6 +84,8 @@ class Weather():
             if r1[k].get('forecast') is not None:
                 data['forecast'] = r1[k]['forecast']
             data['time'] = r1[k]['timestamp']
+            if r1[k].get('temperature') is not None:
+                data['temperature'] = r1[k]['temperature']
             data['longitude'] = r1[k]['location']['longitude']
             data['latitude'] = r1[k]['location']['latitude']
             retData.append(data)
@@ -76,5 +94,6 @@ class Weather():
 if __name__ == "__main__":
     a = Weather()
     for data in a.getData():
-        model.model.insert(table.weather, data)
-    model.model.queryAll(table.weather)
+        print(data)
+    #     model.model.insert(table.weather, data)
+    model.model.queryAll(table.weather, True)

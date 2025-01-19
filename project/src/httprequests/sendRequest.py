@@ -21,10 +21,16 @@ class sendRequest():
             logger.logger.error("%s - error : %s", __name__ , err)
             print(f"Other error occurred: {err}")
         else:
+            ret = 0
             if response.status_code == 200:
-                return response.json()
+                try:
+                    ret = response.json()
+                except Exception as e:
+                    print(e)
+                finally :
+                    return ret
             else:
-                return 0
+                return ret
 
     def getRainFallData(self):
         data = dict()
@@ -42,6 +48,15 @@ class sendRequest():
     def getAirTempData(self):
         data = dict()
         ret = self.getRequest("https://api-open.data.gov.sg/v2/real-time/api/air-temperature")
+        if len(ret) == 0 : return data
+        for i in ret['data']['stations']:
+            data[i['id']]   = {}
+            data[i['id']]['name'] = i['name']
+            data[i['id']]['location'] = i['location']
+        for i in ret['data']['readings'][0]['data']:
+            data[i['stationId']]['timestamp'] = ret['data']['readings'][0]["timestamp"]
+            data[i['stationId']]['temperature'] = i['value']
+        return data
 
     def getTwoHourForecast(self):
         data = dict()
@@ -61,13 +76,14 @@ if __name__ == "__main__":
     
     r1 = t.getRainFallData()
     r2 = t.getTwoHourForecast()
+    r3 = t.getAirTempData()
     for k in r1.keys():
         for k1 in r2.keys():
             if k1 in r1[k]['location']:
                 r1[k]['forecast'] = r2[k1]['forecast']
                 break
 
-    print(r1)
+    print(r3)
     # print(t.getRequest("https://api-open.data.gov.sg/v2/real-time/api/air-temperature"))
     # print(t.getRequest("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast"))
     
