@@ -1,3 +1,4 @@
+#!/bin/bash/python3
 from enum import Enum
 from sqlalchemy.exc import DontWrapMixin
 

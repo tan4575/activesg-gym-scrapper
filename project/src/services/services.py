@@ -1,3 +1,4 @@
+#!/bin/bash/python3
 from threading import Thread,Event,Condition,Lock
 from queue import Queue
 from abc import abstractmethod

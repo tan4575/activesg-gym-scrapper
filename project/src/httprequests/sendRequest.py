@@ -1,3 +1,4 @@
+#!/bin/bash/python3
 import requests, os, sys
 from requests.exceptions import HTTPError
 if __name__ == "__main__":

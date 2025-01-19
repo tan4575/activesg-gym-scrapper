@@ -1,3 +1,4 @@
+#!/bin/bash/python3
 from database import database
 from dotenv import load_dotenv
 import os

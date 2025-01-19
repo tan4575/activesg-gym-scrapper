@@ -1,3 +1,4 @@
+#!/bin/bash/python3
 import os,sys,datetime
 from threading import Event,Timer
 if __name__ == "__main__":
