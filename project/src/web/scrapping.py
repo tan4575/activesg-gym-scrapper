@@ -19,6 +19,7 @@ if platform.machine().strip() == 'x86_64':
     file_path_browser = os.path.abspath('../tools/chromedriver-linux64/chrome-linux64/chrome')
 else:
     file_path = os.path.abspath('../tools/chromedriver/chromedriver')
+    file_path_browser = None
 
 class Scrapping():
 
