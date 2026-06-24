@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 from enum import Enum
+
 from sqlalchemy.exc import DontWrapMixin
 
-class DbException(Exception, DontWrapMixin):
+
+class DatabaseError(Exception, DontWrapMixin):
     def __init__(self, message, error_code):
         self.error_code = error_code
         self.message = message
@@ -11,7 +13,8 @@ class DbException(Exception, DontWrapMixin):
     def __str__(self):
         return f"{self.message} Error Code: {self.error_code}"
 
-class ScrappingException(Exception):
+
+class ScrapingError(Exception):
     def __init__(self, message, error_code):
         self.error_code = error_code
         self.message = message
@@ -21,6 +24,6 @@ class ScrappingException(Exception):
         return f"{self.message} Error Code: {self.error_code}"
 
 
-class ERROR_CODE(Enum):
+class ErrorCode(Enum):
     NOT_FOUND = 404
     DRIVER_ERROR = 100

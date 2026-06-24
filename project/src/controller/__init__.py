@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-__all__ = [ "database", "sendRequest", "scrapping" ,"model"]
+__all__ = ["database", "send_request", "scrapping", "model"]
 
 
 from database import database
-from httprequests import sendRequest
-from web import scrapping
+from httprequests import send_request
 from model import model
-
+from web import scrapping

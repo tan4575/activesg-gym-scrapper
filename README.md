@@ -1,5 +1,7 @@
 # activesg-gym-scrapper
 
+Python scraper for ActiveSG gym capacity and weather data.
+
 ### raspberry pi
 Selenium requires an installed browser that is controlled by a driver. 
 
@@ -35,15 +37,39 @@ install Xvfb
 sudo apt-get install xvfb
 ```
 
-### To create the conda env
+### Install uv
 
 ```
-conda env create -f environment.yml
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
+
+### Install Python dependencies
+
+From the repository root:
+
+```
+uv sync
+```
+
+This creates a local `.venv` and installs the dependencies from `pyproject.toml`.
 
 ### To create database engine
 
 ```
+cd project
 docker compose up
 ```
 
+### Run the scraper
+
+Run in the foreground:
+
+```
+uv run python project/src/main.py
+```
+
+Or use the restart script, which runs the scraper with `nohup` and writes `project/src/run.log`:
+
+```
+./project/run.sh
+```

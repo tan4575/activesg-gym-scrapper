@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-__all__ = [ "database","table"]
+__all__ = ["database", "table"]
 
-from . import database
-from . import table
-
+from . import database, table

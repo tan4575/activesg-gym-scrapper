@@ -1,99 +1,106 @@
 #!/usr/bin/python3
-import os, sys
 import math
+import os
+import sys
+
 if __name__ == "__main__":
-    import os, sys
+    import os
+    import sys
+
     PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
-    sys.path.insert(1,PATH)
+    sys.path.insert(1, PATH)
 
 from database import table
-from httprequests import sendRequest
+from httprequests import send_request
 from model import model
 
-class Weather():
+EARTH_RADIUS_KM = 6371
+
+
+class Weather:
     def __init__(self):
-        self.request = sendRequest.sendRequest()
+        self.request = send_request.SendRequest()
 
-    # haversine formula
     @staticmethod
-    def haversine( lat1, lon1, lat2, lon2):
-        
-        # distance between latitudes
-        # and longitudes
-        dLat = (lat2 - lat1) * math.pi / 180.0
-        dLon = (lon2 - lon1) * math.pi / 180.0
-    
+    def haversine(lat1, lon1, lat2, lon2):
+        delta_latitude = (lat2 - lat1) * math.pi / 180.0
+        delta_longitude = (lon2 - lon1) * math.pi / 180.0
+
         # convert to radians
-        lat1 = (lat1) * math.pi / 180.0
-        lat2 = (lat2) * math.pi / 180.0
-    
-        # apply formulae
-        a = (pow(math.sin(dLat / 2), 2) +
-            pow(math.sin(dLon / 2), 2) *
-                math.cos(lat1) * math.cos(lat2))
-        rad = 6371
+        lat1 = lat1 * math.pi / 180.0
+        lat2 = lat2 * math.pi / 180.0
+
+        a = pow(math.sin(delta_latitude / 2), 2) + pow(
+            math.sin(delta_longitude / 2), 2
+        ) * math.cos(lat1) * math.cos(lat2)
         c = 2 * math.asin(math.sqrt(a))
-        return rad * c
+        return EARTH_RADIUS_KM * c
 
-
-    def getData(self):
-        r1 = self.request.getRainFallData()
-        r2 = self.request.getTwoHourForecast()
-        r3 = self.request.getAirTempData()
-        retData = []
-        location = []
-        bestmatch = ()
-        if len(r1) == 0 or len(r2) == 0 or len(r3) == 0 :
-            return retData
-        for k in r1.keys():
-            r1[k]['area'] = None
+    def get_data(self):
+        rainfall_data = self.request.get_rainfall_data()
+        forecast_data = self.request.get_two_hour_forecast()
+        temperature_data = self.request.get_air_temperature_data()
+        results = []
+        if (
+            len(rainfall_data) == 0
+            or len(forecast_data) == 0
+            or len(temperature_data) == 0
+        ):
+            return results
+        for station_id in rainfall_data:
+            rainfall_data[station_id]["area"] = None
 
             # weather forecast matching
-            dist = float("inf")
-            for k1 in r2.keys():
-                coord_dist = self.haversine(r2[k1]['location']["latitude"],
-                                            r2[k1]['location']["longitude"],
-                                            r1[k]['location']["latitude"],
-                                            r1[k]['location']["longitude"])
-                if coord_dist < dist:
-                    dist = coord_dist
-                    r1[k]['forecast'] = r2[k1]['forecast']
-                    r1[k]['area'] = k1
-                    bestmatch = r1[k]['location'],  r1[k]['name']  ,r2[k1]['location'], k1
-            location.append(r1[k]['area'])
-
+            distance = float("inf")
+            for forecast_area in forecast_data:
+                coord_dist = self.haversine(
+                    forecast_data[forecast_area]["location"]["latitude"],
+                    forecast_data[forecast_area]["location"]["longitude"],
+                    rainfall_data[station_id]["location"]["latitude"],
+                    rainfall_data[station_id]["location"]["longitude"],
+                )
+                if coord_dist < distance:
+                    distance = coord_dist
+                    rainfall_data[station_id]["forecast"] = forecast_data[
+                        forecast_area
+                    ]["forecast"]
+                    rainfall_data[station_id]["area"] = forecast_area
             # temperature
-            dist = float("inf")
-            for k1 in r3.keys():
-                coord_dist = self.haversine(r3[k1]['location']["latitude"],
-                                            r3[k1]['location']["longitude"],
-                                            r1[k]['location']["latitude"],
-                                            r1[k]['location']["longitude"])
-                if coord_dist < dist:
-                    dist = coord_dist
-                    bestmatch = r1[k]['location'],  r1[k]['name']  ,r3[k1]['location'], k1 , r3[k1]
-                    r1[k]['temperature'] = r3[k1]['temperature']
+            distance = float("inf")
+            for temperature_station_id in temperature_data:
+                coord_dist = self.haversine(
+                    temperature_data[temperature_station_id]["location"]["latitude"],
+                    temperature_data[temperature_station_id]["location"]["longitude"],
+                    rainfall_data[station_id]["location"]["latitude"],
+                    rainfall_data[station_id]["location"]["longitude"],
+                )
+                if coord_dist < distance:
+                    distance = coord_dist
+                    rainfall_data[station_id]["temperature"] = temperature_data[
+                        temperature_station_id
+                    ]["temperature"]
 
-        for k in r1:
+        for station_id in rainfall_data:
             data = {}
-            data['deviceId'] = k
-            if r1[k].get('name') is not None:
-                data['area'] = r1[k]['name']
-            if r1[k].get('value') is not None:
-                data['rainfall'] = r1[k]['value']
-            if r1[k].get('forecast') is not None:
-                data['forecast'] = r1[k]['forecast']
-            data['time'] = r1[k]['timestamp']
-            if r1[k].get('temperature') is not None:
-                data['temperature'] = r1[k]['temperature']
-            data['longitude'] = r1[k]['location']['longitude']
-            data['latitude'] = r1[k]['location']['latitude']
-            retData.append(data)
-        return retData
+            data["deviceId"] = station_id
+            if rainfall_data[station_id].get("name") is not None:
+                data["area"] = rainfall_data[station_id]["name"]
+            if rainfall_data[station_id].get("value") is not None:
+                data["rainfall"] = rainfall_data[station_id]["value"]
+            if rainfall_data[station_id].get("forecast") is not None:
+                data["forecast"] = rainfall_data[station_id]["forecast"]
+            data["time"] = rainfall_data[station_id]["timestamp"]
+            if rainfall_data[station_id].get("temperature") is not None:
+                data["temperature"] = rainfall_data[station_id]["temperature"]
+            data["longitude"] = rainfall_data[station_id]["location"]["longitude"]
+            data["latitude"] = rainfall_data[station_id]["location"]["latitude"]
+            results.append(data)
+        return results
+
 
 if __name__ == "__main__":
     a = Weather()
-    for data in a.getData():
+    for data in a.get_data():
         print(data)
     #     model.model.insert(table.weather, data)
-    model.model.queryAll(table.weather, True)
+    model.model.query_all(table.weather, True)

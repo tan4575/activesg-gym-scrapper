@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-__all__ = [ "sendRequest"]
+__all__ = ["send_request"]
 
-from . import sendRequest
-
+from . import send_request
