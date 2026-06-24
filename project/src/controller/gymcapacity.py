@@ -19,15 +19,18 @@ from error import error
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from geopy.geocoders import Nominatim
 from logger import logger
-from model import model
 from web import scrapping
 
 
 class GymCapacity:
-    def __init__(self):
+    def __init__(self, database_model=None):
         self.scraper = scrapping.Scraper("https://activesg.gov.sg/gym-capacity")
         self.name = self.id_generator()
         self.geo_locator = Nominatim(user_agent=self.name)
+        if database_model is None:
+            from model.model import model as database_model
+
+        self.database_model = database_model
 
     def id_generator(self, size=10):
         return "".join(
@@ -55,7 +58,7 @@ class GymCapacity:
             return data
         for key in data["data"]:
             try:
-                data["data"][key]["coordinate"] = model.model.query_one(
+                data["data"][key]["coordinate"] = self.database_model.query_one(
                     table.coordinate, area=data["data"][key]["area"]
                 )[0]
             except Exception as e:
@@ -63,7 +66,7 @@ class GymCapacity:
                 if err[-1].strip() == str(error.ErrorCode.NOT_FOUND.value):
                     location = self.geocode(data["data"][key]["area"] + " Singapore")
                     if location is not None:
-                        model.model.insert(
+                        self.database_model.insert(
                             table.coordinate,
                             {
                                 "area": data["data"][key]["area"],
@@ -72,7 +75,7 @@ class GymCapacity:
                                 "time": str(datetime.datetime.now()),
                             },
                         )
-                        data["data"][key]["coordinate"] = model.model.query_one(
+                        data["data"][key]["coordinate"] = self.database_model.query_one(
                             table.coordinate, area=data["data"][key]["area"]
                         )[0]
                     else:

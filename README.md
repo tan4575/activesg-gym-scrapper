@@ -59,16 +59,24 @@ The script stops any matching running scraper process, restarts it with `uv run`
 
 ## Development
 
+Run the unit tests:
+
+```bash
+uv run pytest
+```
+
+Pytest includes coverage reporting and fails below 80% total coverage. Current tests cover Data.gov.sg response parsing, weather matching, database helpers, service threading, gym capacity enrichment, and Selenium parsing with mocks.
+
 Run Ruff lint checks:
 
 ```bash
-uv run ruff check project/src
+uv run ruff check project/src project/tests
 ```
 
 Format source files:
 
 ```bash
-uv run ruff format project/src
+uv run ruff format project/src project/tests
 ```
 
 Run a quick syntax check:
@@ -77,11 +85,7 @@ Run a quick syntax check:
 uv run python -m compileall project/src
 ```
 
-Tests are not yet committed. Add future tests under `project/tests` and run them with:
-
-```bash
-uv run pytest
-```
+Add future tests under `project/tests` and name files `test_<module>.py`.
 
 ## Project Layout
 
@@ -92,3 +96,4 @@ uv run pytest
 - `project/src/httprequests/`: Data.gov.sg HTTP client
 - `project/src/database/` and `project/src/model/`: SQLAlchemy tables and database access
 - `project/src/assets/`: static gym address and SportSG GeoJSON data
+- `project/tests/`: pytest unit tests with mocks for external services

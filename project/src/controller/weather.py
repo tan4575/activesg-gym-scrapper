@@ -10,9 +10,7 @@ if __name__ == "__main__":
     PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
     sys.path.insert(1, PATH)
 
-from database import table
 from httprequests import send_request
-from model import model
 
 EARTH_RADIUS_KM = 6371
 
@@ -99,6 +97,9 @@ class Weather:
 
 
 if __name__ == "__main__":
+    from database import table
+    from model import model
+
     a = Weather()
     for data in a.get_data():
         print(data)

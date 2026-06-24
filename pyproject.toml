@@ -18,6 +18,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=6.0",
     "ruff>=0.9.0",
 ]
 
@@ -25,8 +26,22 @@ dev = [
 package = false
 
 [tool.pytest.ini_options]
+addopts = "--cov=project/src --cov-report=term-missing --cov-fail-under=80"
 pythonpath = ["project/src"]
 testpaths = ["project/tests"]
+
+[tool.coverage.run]
+omit = [
+    "project/src/__init__.py",
+    "project/src/*/__init__.py",
+    "project/src/main.py",
+    "project/src/model/model.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+]
 
 [tool.ruff]
 line-length = 88

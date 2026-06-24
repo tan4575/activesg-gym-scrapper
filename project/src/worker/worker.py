@@ -7,9 +7,10 @@ from threading import Event
 if __name__ == "__main__":
     PATH = "/".join(os.path.realpath(__file__).split("/")[0:-2])
     sys.path.insert(1, PATH)
-from controller import gymcapacity, model, weather
+from controller import gymcapacity, weather
 from database import table
 from logger import logger
+from model import model
 from services import services
 
 
